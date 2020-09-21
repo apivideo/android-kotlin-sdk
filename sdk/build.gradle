@@ -24,7 +24,7 @@ android {
     }
     libraryVariants.all { variant ->
         variant.outputs.all {
-            outputFileName = "apivideo-android-sdk-${defaultConfig.versionName}.aar"
+            outputFileName = "apivideo-android-sdk-${variant.name}-${defaultConfig.versionName}.aar"
         }
     }
 

@@ -1,2 +1,2 @@
-rootProject.name='Example'
+rootProject.name='android-kotlin-sdk'
 include ':sdk'
