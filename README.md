@@ -16,7 +16,7 @@ The api.video service helps you put video online without the hassle. This docume
 7. click on "Apply" and then "ok"
 
 ### Permissions:
-
+```xml
 <manifest ...>
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -24,7 +24,7 @@ The api.video service helps you put video online without the hassle. This docume
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 </manifest>
-
+```
 ### Quick Start
 
 #### 1. In the App instantiate a new Client
