@@ -4,6 +4,14 @@
 The api.video service helps you put video online without the hassle. This documentation helps you use the corresponding Android client. This is an early version, feel free to report any issue.
 
 ## Installation
+### With maven
+On build.gradle add the following code in dependencies:
+```xml
+dependencies {
+    ...
+    implementation 'video.api:android-kotlin-sdk:0.1.1' // add this line
+}
+```
 ### As a local aar
 
 1. Download the [latest release](https://github.com/apivideo/android-kotlin-sdk/releases) of the aar file.
