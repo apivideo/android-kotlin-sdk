@@ -4,15 +4,35 @@
 The api.video service helps you put video online without the hassle. This documentation helps you use the corresponding Android client. This is an early version, feel free to report any issue.
 
 ## Installation
+We are using exernal library for rtmp brodcasting witch using jitpack.io as dependency manager, so first of all add it in your root build.gradle at the end of repositories:
+```xml
+    allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+```
+
+Now you can use Maven or Jitpack.io.
 ### With maven
 On build.gradle add the following code in dependencies:
 ```xml
 dependencies {
     ...
-    implementation 'video.api:android-kotlin-sdk:0.1.1' // add this line
+    implementation 'video.api:android-kotlin-sdk:0.1.3' // add this line
 }
 ```
-### As a local aar
+### With jitpack.io
+On build.gradle add the following code in dependencies:
+```xml
+dependencies {
+    ...
+    implementation 'com.github.apivideo:android-kotlin-sdk:0.1.3' // add this line
+}
+```
+
+### Or import with a local aar
 
 1. Download the [latest release](https://github.com/apivideo/android-kotlin-sdk/releases) of the aar file.
 2. Go to “File” > “Project Structure...”
@@ -916,3 +936,27 @@ client.captions.delete(videoId, language, object : CallBack<Boolean>{
     }
 })
 ```
+
+### Plugins
+
+API.Video sdk is using external library
+
+| Plugin | README |
+| ------ | ------ |
+| rtmp-rtsp-stream-client-java | [https://github.com/pedroSG94/rtmp-rtsp-stream-client-java][rtmp-rtsp-stream-client-java] |
+
+### FAQ
+If you have any questions, ask us here:  https://community.api.video .
+Or use [Issues].
+
+License
+----
+
+MIT License
+Copyright (c) 2020 api.video
+
+[//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job. There is no need to format nicely because it shouldn't be seen. Thanks SO - http://stackoverflow.com/questions/4823468/store-comments-in-markdown-syntax)
+
+   [rtmp-rtsp-stream-client-java]: <https://github.com/pedroSG94/rtmp-rtsp-stream-client-java>
+   [Issues]: <https://github.com/apivideo/android-kotlin-sdk/issues>
+
