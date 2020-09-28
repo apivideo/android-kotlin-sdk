@@ -1,0 +1,3 @@
+include ':AndroidKotlinSdk'
+include ':app'
+rootProject.name = "AndroidKotlinSDKExample"
