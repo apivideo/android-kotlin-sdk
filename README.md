@@ -6,12 +6,12 @@ The api.video service helps you put video online without the hassle. This docume
 ## Installation
 We are using exernal library for rtmp brodcasting witch using jitpack.io as dependency manager, so first of all add it in your root build.gradle at the end of repositories:
 ```xml
-    allprojects {
-		repositories {
-			...
-			maven { url 'https://jitpack.io' }
-		}
-	}
+allprojects {
+    repositories {
+        ...
+        maven { url 'https://jitpack.io' }
+    }
+}
 ```
 
 Now you can use Maven or Jitpack.io.
