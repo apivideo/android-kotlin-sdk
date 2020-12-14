@@ -53,6 +53,15 @@ dependencies {
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 </manifest>
 ```
+
+### Application:
+```xml
+<application
+    ...
+    android:largeHeap="true">
+    ...
+</application>
+```
 ### Quick Start
 
 #### 1. In the App instantiate a new Client
@@ -104,6 +113,7 @@ val apiVideoClient = Client.createSandbox(YOUR_SANDBOX_API_KEY)
 ### VIDEO
 
 #### Upload Video
+To upload a large video file don't forget to add 'android:largeHeap="true"' on your Android Manifest
 ##### Getting started
 ```kotlin
 // file: File

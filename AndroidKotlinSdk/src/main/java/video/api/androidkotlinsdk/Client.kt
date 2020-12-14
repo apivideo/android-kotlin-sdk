@@ -37,7 +37,7 @@ class Client(
             val executor = HttpRequestExecutor(client)
 
             return Client(
-                VideoApi(baseUri, executor),
+                VideoApi(baseUri, executor, client),
                 PlayerApi(baseUri, executor),
                 CaptionApi(baseUri, executor),
                 ChapterApi(baseUri, executor),

@@ -1,28 +1,34 @@
 package video.api.androidkotlinsdk.api
 
+import android.util.Log
+import okhttp3.*
 import okhttp3.HttpUrl.Companion.toHttpUrl
-import okhttp3.MultipartBody
-import okhttp3.Request
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import video.api.androidkotlinsdk.CallBack
+import video.api.androidkotlinsdk.RequestBodyUtil
 import video.api.androidkotlinsdk.http.RequestExecutor
 import video.api.androidkotlinsdk.model.*
 import video.api.androidkotlinsdk.pagination.Page
 import video.api.androidkotlinsdk.pagination.Pager
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
+import java.util.concurrent.CountDownLatch
 
 
 class VideoApi(
     private val baseUri: String,
-    private val executor: RequestExecutor
+    private val executor: RequestExecutor,
+    private val client: OkHttpClient
 ) {
     companion object {
         private val boundary: String = "----WebKitFormBoundary" + System.currentTimeMillis()
+        var defaultChunkLength: Long = 100L
     }
 
-    private val chunkLength = (1024 * 1000) * 128
+    private val chunkLength = (1024L * 1000L) * defaultChunkLength
 
     private val videoTransformer = BodyTransformer {
         Video(it
@@ -81,6 +87,83 @@ class VideoApi(
     }
 
     /**
+     * Upload large file by chunks
+     *
+     * @param videoId
+     * @param file
+     */
+    private fun uploadBigFile(videoId: String, file: File){
+        val fileLength = file.length()
+        try {
+            Log.e("chunkLength", chunkLength.toString())
+            var b = ByteArray(chunkLength.toInt())
+            var bytesReads = 0
+
+            for (offset in 0 until fileLength step chunkLength){
+                var readBytes: Int
+                val fileStream = file.inputStream()
+                var currentPosition = (offset.toInt()) + chunkLength.toInt() - 1
+
+                // foreach chunk except the first one
+                if(offset > 0){
+                    // skip all the chunks already uploaded
+                    fileStream.skip(offset)
+                }
+
+                // if this is the last chunk
+                if(currentPosition > fileLength){
+                    readBytes = fileStream.read(b, 0, (fileLength - bytesReads).toInt())
+                    currentPosition = file.length().toInt() - 1
+                }else{
+                    readBytes = fileStream.read(b, 0, chunkLength.toInt())
+                }
+                bytesReads += readBytes
+
+                val byteArrayOutput = ByteArrayOutputStream()
+                byteArrayOutput.write(b, 0, readBytes)
+                val byteArrayInput = ByteArrayInputStream(byteArrayOutput.toByteArray())
+                val videoFile = RequestBodyUtil.create(byteArrayInput)
+
+                val body = MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart("file", "file", videoFile)
+                    .build()
+
+                val request = Request.Builder()
+                    .url("$baseUri/videos/$videoId/source")
+                    .addHeader(
+                        "Content-Range",
+                        "bytes ${offset.toInt()}-$currentPosition/${file.length().toInt()}"
+                    )
+                    .post(body)
+                    .build()
+
+                val countDownLatch = CountDownLatch(1)
+
+                client.newCall(request).enqueue(object : Callback {
+                    override fun onFailure(call: Call, e: IOException) {
+                        countDownLatch.countDown()
+                        e.printStackTrace()
+                    }
+
+                    override fun onResponse(call: Call, response: Response) {
+                        response.use {
+                            if (!response.isSuccessful) throw IOException("Unexpected code $response")
+                            countDownLatch.countDown()
+                        }
+                    }
+                })
+                countDownLatch.await()
+                byteArrayOutput.close()
+                byteArrayInput.close()
+                fileStream.close()
+            }
+        }catch (e: Exception){
+            Log.e("error post", e.toString())
+        }
+    }
+
+    /**
      * Create and upload new video
      */
     fun upload(file: File, video: Video, callBack: CallBack<Video>) {
@@ -100,7 +183,7 @@ class VideoApi(
                     if (size < chunkLength) {
                         uploadSmallFile(videoId, file, callBack)
                     } else {
-                        callBack.onFatal(IOException("Warning, Large file upload (more than 128MB) is not implemented yet in this pre-release version."))
+                        uploadBigFile(videoId, file)
                     }
                 } else {
                     callBack.onFatal(IOException("Error during uploading!"))
