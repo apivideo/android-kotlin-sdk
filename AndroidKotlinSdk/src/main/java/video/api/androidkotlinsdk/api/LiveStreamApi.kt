@@ -31,8 +31,16 @@ class LiveStreamApi(
      * Create LiveStream
      * @param name name of the object to create
      */
+    fun createPrivate(name: String, callback: CallBack<LiveStream>) {
+        create(LiveStream(name, false), callback)
+    }
+
+    /**
+     * Create LiveStream
+     * @param name name of the object to create
+     */
     fun create(name: String, callback: CallBack<LiveStream>) {
-        create(LiveStream(name), callback)
+        create(LiveStream(name, true), callback)
     }
 
     /**

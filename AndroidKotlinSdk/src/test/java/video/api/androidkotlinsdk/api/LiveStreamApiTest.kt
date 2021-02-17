@@ -16,7 +16,29 @@ internal class LiveStreamApiTest {
     @Test
     fun create() {
         val testCallBack = TestCallback<LiveStream>()
-        api.create(LiveStream("foo"), testCallBack)
+        api.create(LiveStream("foo", true), testCallBack)
+
+        val lastRequest = executor.lastRequest!!
+
+        assertEquals("POST", lastRequest.method)
+        assertEquals("https://tests/live-streams", lastRequest.url.toString())
+    }
+
+    @Test
+    fun createName() {
+        val testCallBack = TestCallback<LiveStream>()
+        api.create("foo", testCallBack)
+
+        val lastRequest = executor.lastRequest!!
+
+        assertEquals("POST", lastRequest.method)
+        assertEquals("https://tests/live-streams", lastRequest.url.toString())
+    }
+
+    @Test
+    fun createPrivate() {
+        val testCallBack = TestCallback<LiveStream>()
+        api.createPrivate("foo", testCallBack)
 
         val lastRequest = executor.lastRequest!!
 
