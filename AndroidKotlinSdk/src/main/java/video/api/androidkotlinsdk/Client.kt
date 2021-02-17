@@ -15,6 +15,7 @@ class Client(
     companion object {
         var productionBaseUri = "https://ws.api.video"
         var sandboxBaseUri = "https://sandbox.api.video"
+        var userAgent = "api.video SDK (android; v:0.1.5; )"
 
         fun createProduction(key: String): Client {
             return createClient(TokenHolder(), productionBaseUri, key)
@@ -31,6 +32,7 @@ class Client(
         ): Client {
             val client = OkHttpClient().newBuilder()
                 .authenticator(TokenAuthenticator(tokenHolder, baseUri, key))
+                .addInterceptor(UserAgentInterceptor(userAgent))
                 .addInterceptor(Authorizer(tokenHolder))
                 .build()
 
