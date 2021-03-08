@@ -4,7 +4,7 @@ import org.json.JSONObject
 
 class LiveStream(val body: JSONObject = JSONObject()) {
 
-    constructor(title: String) : this(JSONObject().put("title", title))
+    constructor(name: String, public: Boolean) : this(JSONObject().put("name", name).put("public", public))
 
     class QueryParams : video.api.androidkotlinsdk.model.QueryParams() {
         // Filter
@@ -58,6 +58,12 @@ class LiveStream(val body: JSONObject = JSONObject()) {
         get() = body.optBoolean("record", false)
         set(value) {
             body.put("record", value)
+        }
+
+    var public: Boolean?
+        get() = body.optBoolean("public", false)
+        set(value) {
+            body.put("public", value)
         }
 
 }

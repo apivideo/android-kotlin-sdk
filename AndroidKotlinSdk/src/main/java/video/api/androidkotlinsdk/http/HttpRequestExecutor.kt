@@ -1,5 +1,8 @@
 package video.api.androidkotlinsdk.http
 
+import android.os.Handler
+import android.os.Looper
+import androidx.core.os.HandlerCompat
 import okhttp3.*
 import org.json.JSONObject
 import video.api.androidkotlinsdk.CallBack
@@ -11,6 +14,7 @@ class HttpRequestExecutor(
     private val client: OkHttpClient
 ) : RequestExecutor {
 
+    val mainThreadHandler: Handler = HandlerCompat.createAsync(Looper.getMainLooper())
     override fun <T> execute(
         request: Request,
         transformer: BodyTransformer<T>,
@@ -19,7 +23,9 @@ class HttpRequestExecutor(
 
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                callback.onFatal(e)
+                mainThreadHandler.post {
+                    callback.onFatal(e)
+                }
             }
 
             override fun onResponse(call: Call, response: Response) {
@@ -27,17 +33,25 @@ class HttpRequestExecutor(
                     when (response.code) {
                         200, 201 -> {
                             val body = JSONObject(response.body!!.string())
-                            callback.onSuccess(transformer.fromJson(body))
+                            mainThreadHandler.post {
+                                callback.onSuccess(transformer.fromJson(body))
+                            }
                         }
                         204 -> {
-                            callback.onSuccess(transformer.fromJson(JSONObject()))
+                            mainThreadHandler.post {
+                                callback.onSuccess(transformer.fromJson(JSONObject()))
+                            }
                         }
                         400, 404 -> {
                             val body = JSONObject(response.body!!.string())
-                            callback.onError(Error(body))
+                            mainThreadHandler.post {
+                                callback.onError(Error(body))
+                            }
                         }
                         else -> {
-                            callback.onFatal(IOException("Unexpected code $response"))
+                            mainThreadHandler.post {
+                                callback.onFatal(IOException("Unexpected code $response"))
+                            }
                         }
                     }
                 }
