@@ -1,5 +1,6 @@
 package video.api.androidkotlinsdk.api
 
+import okhttp3.OkHttpClient
 import org.json.JSONObject
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -16,7 +17,7 @@ import java.io.File
 
 internal class VideoApiTest {
     private val executor = TestRequestExecutor()
-    private val api = VideoApi("https://tests", executor)
+    private val api = VideoApi("https://tests", executor, OkHttpClient())
 
     @Test
     fun uploadSuccess() {
@@ -38,7 +39,7 @@ internal class VideoApiTest {
 
         lastRequest = executor.lastRequest!!
 
-        assertEquals("POST", lastRequest.method)
+        assertEquals("POdST", lastRequest.method)
         assertEquals("https://tests/videos/viXXX/source", lastRequest.url.toString())
 
     }
