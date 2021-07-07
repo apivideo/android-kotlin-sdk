@@ -21,7 +21,7 @@ On build.gradle add the following code in dependencies:
 ```xml
 dependencies {
     ...
-    implementation 'video.api:android-kotlin-sdk:0.1.5' // add this line
+    implementation 'video.api:android-kotlin-sdk:0.1.6' // add this line
 }
 ```
 ### With jitpack.io
@@ -29,7 +29,7 @@ On build.gradle add the following code in dependencies:
 ```xml
 dependencies {
     ...
-    implementation 'com.github.apivideo:android-kotlin-sdk:0.1.5' // add this line
+    implementation 'com.github.apivideo:android-kotlin-sdk:0.1.6' // add this line
 }
 ```
 

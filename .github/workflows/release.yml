@@ -1,0 +1,11 @@
+name: Release package to Maven Central Repository
+on:
+  release:
+    types: [created]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run the tests
+        run: ./gradlew build uploadArchive -PNEXUS_USERNAME=${{ secrets.OSSRH_USERNAME }} -PNEXUS_PASSWORD="${{ secrets.OSSRH_PASSWORD }}"

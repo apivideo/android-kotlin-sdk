@@ -15,7 +15,7 @@ class Client(
     companion object {
         var productionBaseUri = "https://ws.api.video"
         var sandboxBaseUri = "https://sandbox.api.video"
-        var userAgent = "api.video SDK (android; v:0.1.5; )"
+        var userAgent = "api.video SDK (android; v:0.1.6; )"
 
         fun createProduction(key: String): Client {
             return createClient(TokenHolder(), productionBaseUri, key)
